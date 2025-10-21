@@ -1,0 +1,48 @@
+# config.yaml
+
+# ----------------- 路径设置 (Path Settings) -----------------
+data:
+  # train_input_dir: "/home/gjw/dl/data/data_progress/train/input/vlow_patches"   # 训练输入图片路径
+  # train_gt_dir: "/home/gjw/dl/data/data_progress/train/gt/low_patches"         # 训练GT图片路径
+  # val_input_dir: "/home/gjw/dl/data/data_progress/val/input/vlow_patches"       # 验证输入图片路径
+  # val_gt_dir: "/home/gjw/dl/data/data_progress/val/gt/low_patches"            # 验证GT图片路径
+
+  train_input_dir: "/home/gjw/dl/data/data_progress/train/input/low_patches"   # 训练输入图片路径
+  train_gt_dir: "/home/gjw/dl/data/data_progress/train/gt/input_patches"         # 训练GT图片路径
+  val_input_dir: "/home/gjw/dl/data/data_progress/val/input/low_patches"       # 验证输入图片路径
+  val_gt_dir: "/home/gjw/dl/data/data_progress/val/gt/input_patches"            # 验证GT图片路径
+  output_dir: "output"                  # 所有输出的根目录
+
+# ----------------- 训练参数 (Training Parameters) -----------------
+train:
+  epochs: 20000                           # 训练的总轮次
+  batch_size: 16                        # 批处理大小
+  lr: 0.00005                            # 学习率
+  device: "cuda:5"                        # 训练设备, "cuda" or "cpu"
+  num_workers: 4                        # 数据加载器的工作进程数
+  resume_checkpoint: null               # 是否从某个checkpoint恢复训练, e.g., "output/2025-09-21_10-30-00/checkpoint/model_epoch_50.pth"
+
+# ----------------- 模型参数 (Model Parameters) -----------------
+model:
+  image_size: 128                       # 输入图像尺寸
+  input_channels: 1                     # 输入图像通道数 (灰度图为1)
+  gt_channels: 1                        # GT图像通道数 (灰度图为1)
+  base_channels: 128                     # U-Net第一层的通道数
+  channel_multipliers: [1, 2, 4, 8]     # 通道数倍增因子
+  time_embedding_dim: 256               # 时间编码维度
+  attention_resolutions: [2, 4]         # 在哪些下采样级别(e.g., 128->32, 128->16)应用注意力
+  num_res_blocks: 2                     # 每个分辨率级别中残差块的数量
+  dropout: 0.1                          # Dropout比率
+
+# ----------------- 扩散模型参数 (Diffusion Parameters) -----------------
+diffusion:
+  timesteps: 1000                       # 扩散过程的总步数
+  beta_start: 0.0001                    # beta值的起始
+  beta_end: 0.02                        # beta值的结束
+  schedule_type: "linear"               # beta调度类型, "linear" or "cosine"
+
+# ----------------- 日志和保存设置 (Logging and Saving Settings) -----------------
+log:
+  log_freq: 200                          # 每隔多少个batch打印一次日志
+  plot_freq: 300                         # 每隔多少个epoch保存一次验证集图像
+  checkpoint_freq: 1000                   # 每隔多少个epoch保存一次模型

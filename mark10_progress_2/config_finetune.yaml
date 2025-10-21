@@ -1,0 +1,55 @@
+# config_finetune.yaml
+
+# ----------------- 路径设置 (Path Settings) -----------------
+data:
+  # [修改] 这里指向新的B->C数据集
+  train_input_dir: "/home/gjw/dl/data/data_progress/train/input/low_patches"   # 训练输入图片路径
+  train_gt_dir: "/home/gjw/dl/data/data_progress/train/gt/input_patches"         # 训练GT图片路径
+  val_input_dir: "/home/gjw/dl/data/data_progress/val/input/low_patches"       # 验证输入图片路径
+  val_gt_dir: "/home/gjw/dl/data/data_progress/val/gt/input_patches"            # 验证GT图片路径
+  # train_input_dir: "/home/gjw/dl/data/data_progress/train/input/input_patches"   # 训练输入图片路径
+  # train_gt_dir: "/home/gjw/dl/data/data_progress/train/gt/gt_patches"         # 训练GT图片路径
+  # val_input_dir: "/home/gjw/dl/data/data_progress/val/input/input_patches"       # 验证输入图片路径
+  # val_gt_dir: "/home/gjw/dl/data/data_progress/val/gt/gt_patches"            # 验证GT图片路径
+  output_dir: "output"                  # 所有输出的根目录
+
+# ----------------- 微调特定参数 (Finetune-specific Parameters) -----------------
+finetune:
+  # [重要] 指向你已经训练好的A->B模型权重
+  checkpoint_path: "output/2025-09-20_17-30-48/checkpoint/model_epoch_20000.pth"
+  # checkpoint_path: "output/2025-09-21_09-02-15/checkpoint/finetuned_model_epoch_5000.pth"
+
+# ----------------- 训练参数 (Training Parameters) -----------------
+train:
+  # [修改] 微调通常使用更少的轮次
+  epochs: 5000
+  batch_size: 16
+  # [重要] 微调时建议使用更小的学习率
+  lr: 0.00002  # 例如，原始学习率的1/4
+  device: "cuda:5"
+  num_workers: 4
+  # 在微调脚本中，我们将忽略这个resume_checkpoint
+  resume_checkpoint: null
+
+# --- 模型和扩散参数通常保持不变，除非你的输入/输出尺寸等变了 ---
+model:
+  image_size: 128                       # 输入图像尺寸
+  input_channels: 1                     # 输入图像通道数 (灰度图为1)
+  gt_channels: 1                        # GT图像通道数 (灰度图为1)
+  base_channels: 128                     # U-Net第一层的通道数
+  channel_multipliers: [1, 2, 4, 8]     # 通道数倍增因子
+  time_embedding_dim: 256               # 时间编码维度
+  attention_resolutions: [2, 4]         # 在哪些下采样级别(e.g., 128->32, 128->16)应用注意力
+  num_res_blocks: 2                     # 每个分辨率级别中残差块的数量
+  dropout: 0.1                          # Dropout比率
+
+diffusion:
+  timesteps: 1000
+  beta_start: 0.0001
+  beta_end: 0.02
+  schedule_type: "linear"
+
+log:
+  log_freq: 10
+  plot_freq: 30 # 微调时可能想更频繁地看结果
+  checkpoint_freq: 250
