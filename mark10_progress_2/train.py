@@ -1,5 +1,5 @@
 # train.py
-
+import csv
 import yaml
 import os
 import torch
@@ -21,6 +21,12 @@ def main():
 
     # 2. 创建输出目录
     output_dir = setup_output_dir(config)
+    # --- 创建并初始化日志文件 ---
+    log_file_path = os.path.join(output_dir, 'logs', 'training_log.csv')
+    with open(log_file_path, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['epoch', 'avg_loss'])  # 写入表头
+    print(f"训练日志将保存到: {log_file_path}")
 
     # 3. 设置设备
     device = torch.device(config['train']['device'] if torch.cuda.is_available() else "cpu")
@@ -56,7 +62,8 @@ def main():
     model = UNet(config).to(device)
     diffusion = DiffusionModel(config)
     optimizer = Adam(model.parameters(), lr=config['train']['lr'])
-
+    # [新增] 创建一个列表来存储当前epoch的所有损失值
+    epoch_losses = []
     start_epoch = 1
     # 如果设置了，则加载预训练模型
     if config['train']['resume_checkpoint']:
@@ -71,8 +78,14 @@ def main():
     print("开始训练...")
     for epoch in range(start_epoch, config['train']['epochs'] + 1):
         # 训练
-        train_one_epoch(model, diffusion, train_loader, optimizer, device, epoch, config)
+        #train_one_epoch(model, diffusion, train_loader, optimizer, device, epoch, config)
+        # [修改] 接收 train_one_epoch 返回的平均损失
+        avg_loss = train_one_epoch(model, diffusion, train_loader, optimizer, device, epoch, config)
 
+        # [新增] 将损失写入文件
+        with open(log_file_path, 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([epoch, avg_loss])
         # 评估和可视化
         if epoch % config['log']['plot_freq'] == 0:
             evaluate(model, diffusion, val_loader, device, output_dir, epoch, config)

@@ -15,16 +15,16 @@ data:
 
 # ----------------- 训练参数 (Training Parameters) -----------------
 train:
-  epochs: 2000                           # 训练的总轮次
-  batch_size: 8                        # 批处理大小
+  epochs: 50                           # 训练的总轮次
+  batch_size: 16                        # 批处理大小
   lr: 0.00005                            # 学习率
   device: "cuda:0"                        # 训练设备, "cuda" or "cpu"
   num_workers: 4                        # 数据加载器的工作进程数
-  resume_checkpoint: output/2025-10-22_11-44-01/checkpoint/model_epoch_0050.pth               # 是否从某个checkpoint恢复训练, e.g., "output/2025-09-21_10-30-00/checkpoint/model_epoch_50.pth"
+  resume_checkpoint: null               # 是否从某个checkpoint恢复训练, e.g., "output/2025-09-21_10-30-00/checkpoint/model_epoch_50.pth"
 
 # ----------------- 模型参数 (Model Parameters) -----------------
 model:
-  image_size: 128                       # 输入图像尺寸
+  image_size: 64                       # 输入图像尺寸
   input_channels: 1                     # 输入图像通道数 (灰度图为1)
   gt_channels: 1                        # GT图像通道数 (灰度图为1)
   base_channels: 128                     # U-Net第一层的通道数
@@ -43,6 +43,6 @@ diffusion:
 
 # ----------------- 日志和保存设置 (Logging and Saving Settings) -----------------
 log:
-  log_freq: 200                         # 每隔多少个batch打印一次日志
-  plot_freq: 200                         # 每隔多少个epoch保存一次验证集图像
-  checkpoint_freq: 200                   # 每隔多少个epoch保存一次模型
+  log_freq: 2                          # 每隔多少个batch打印一次日志
+  plot_freq: 3                         # 每隔多少个epoch保存一次验证集图像
+  checkpoint_freq: 10                   # 每隔多少个epoch保存一次模型
