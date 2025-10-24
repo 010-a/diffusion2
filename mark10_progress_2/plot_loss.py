@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import argparse
 import os
 
-# use like : python plot_loss.py "output/2025-10-21_21-07-08/logs/training_log.csv"
+# use like : python plot_loss.py "output/2025-10-22_17-25-28/logs/training_log.csv"
 def plot_loss_curve(log_file_path: str):
     """
     从CSV日志文件中读取数据，绘制训练损失曲线，并标记出最佳epoch。

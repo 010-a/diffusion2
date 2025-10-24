@@ -37,7 +37,7 @@ def denoise_image(model, diffusion, input_image_tensor, device, config):
 def main():
     # --- 需要手动指定的参数 ---
     # 指定要测试的模型checkpoint路径
-    checkpoint_path = "output/2025-10-21_21-07-08/checkpoint/model_epoch_1600.pth"
+    checkpoint_path = "output/2025-10-22_17-25-28/checkpoint/model_epoch_0200.pth"
     # 指定包含测试图像的文件夹
     test_input_dir = "C:/Users/Guo_lab/Desktop/lxy/data-64-128/predict/lr"  # 或者其他测试文件夹
     # -------------------------
